@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>History</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+<img src="{{ url_for('static', filename='logo.png') }}">
+
+<h1>Online Quiz Application</h1>
+<h2>Your History</h2>
+
+<ul>
+{% for row in data %}
+<li>Score: {{ row[0] }}</li>
+{% endfor %}
+</ul>
+
+<br>
+
+<a href="/dashboard"><button>Back</button></a>
+
+</div>
+
+</body>
+</html>

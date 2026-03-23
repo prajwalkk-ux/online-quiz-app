@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+<img src="{{ url_for('static', filename='logo.png') }}">
+
+<h1>Online Quiz Application</h1>
+<h2>Dashboard</h2>
+
+<a href="/quiz"><button>Start Quiz</button></a><br><br>
+<a href="/history"><button>View History</button></a><br><br>
+<a href="/logout"><button>Logout</button></a>
+
+</div>
+
+</body>
+</html>

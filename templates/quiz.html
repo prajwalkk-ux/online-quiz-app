@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .question {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .options label {
+            display: block;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+
+        .timer {
+            font-weight: bold;
+            color: red;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<img src="{{ url_for('static', filename='logo.png') }}">
+
+<h1>Online Quiz Application</h1>
+<h2>Quiz</h2>
+
+<div class="timer">
+    Time Left: <span id="time">30</span> sec
+</div>
+
+<form action="/result" method="POST">
+
+<div class="question">
+    <p>1. Which language is used for web development?</p>
+    <div class="options">
+        <label><input type="radio" name="q1" value="Python"> Python</label>
+        <label><input type="radio" name="q1" value="Java"> Java</label>
+        <label><input type="radio" name="q1" value="C"> C</label>
+    </div>
+</div>
+
+<div class="question">
+    <p>2. Which database is used in this project?</p>
+    <div class="options">
+        <label><input type="radio" name="q2" value="SQLite"> SQLite</label>
+        <label><input type="radio" name="q2" value="MySQL"> MySQL</label>
+        <label><input type="radio" name="q2" value="MongoDB"> MongoDB</label>
+    </div>
+</div>
+
+<br>
+
+<button type="submit">Submit</button>
+
+</form>
+
+</div>
+
+<!-- TIMER SCRIPT -->
+<script>
+let time = 30;
+let timer = setInterval(function() {
+    document.getElementById("time").innerText = time;
+    time--;
+
+    if (time < 0) {
+        clearInterval(timer);
+        document.forms[0].submit();
+    }
+}, 1000);
+</script>
+
+</body>
+</html>
