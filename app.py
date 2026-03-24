@@ -2,11 +2,39 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import os
 
-# 🔥 STATIC PATH FIX
-base_dir = os.path.abspath(os.path.dirname(__file__))
-app = Flask(__name__, static_folder=os.path.join(base_dir, 'static'))
-
+app = Flask(__name__)
 app.secret_key = "secret123"
+
+# -------------------- DATABASE INIT --------------------
+def init_db():
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+
+    # Users table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            email TEXT,
+            password TEXT
+        )
+    ''')
+
+    # Scores table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS scores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            score INTEGER
+        )
+    ''')
+
+    conn.commit()
+    conn.close()
+
+# Initialize DB
+init_db()
+
 
 # -------------------- HOME --------------------
 @app.route('/')
@@ -25,10 +53,8 @@ def register():
         conn = sqlite3.connect('users.db')
         cursor = conn.cursor()
 
-        cursor.execute(
-            "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-            (username, email, password)
-        )
+        cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+                       (username, email, password))
 
         conn.commit()
         conn.close()
@@ -47,10 +73,7 @@ def login():
     conn = sqlite3.connect('users.db')
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT * FROM users WHERE username=? AND password=?",
-        (username, password)
-    )
+    cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
     user = cursor.fetchone()
 
     conn.close()
@@ -86,6 +109,7 @@ def result():
 
     if q1 == "Python":
         score += 1
+
     if q2 == "SQLite":
         score += 1
 
@@ -94,10 +118,7 @@ def result():
     conn = sqlite3.connect('users.db')
     cursor = conn.cursor()
 
-    cursor.execute(
-        "INSERT INTO scores (username, score) VALUES (?, ?)",
-        (username, score)
-    )
+    cursor.execute("INSERT INTO scores (username, score) VALUES (?, ?)", (username, score))
 
     conn.commit()
     conn.close()
@@ -113,10 +134,7 @@ def history():
     conn = sqlite3.connect('users.db')
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT score FROM scores WHERE username=?",
-        (username,)
-    )
+    cursor.execute("SELECT score FROM scores WHERE username=?", (username,))
     data = cursor.fetchall()
 
     conn.close()
@@ -131,12 +149,6 @@ def logout():
     return redirect('/')
 
 
-# -------------------- TEST LOGO ROUTE 🔥 --------------------
-@app.route('/test-logo')
-def test_logo():
-    return '<img src="/static/logo.jpg" width="200">'
-
-
 # -------------------- RUN --------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=10000)
